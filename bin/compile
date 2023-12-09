@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if ! command -v cross >/dev/null 2>&1; then
+	echo "Binary don't exist"
+	echo "Install with: cargo install cross or cargo binstall cross"
+
+	exit 0
+fi
+
+# This need to be done because I'm on a macos m2 arm
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+
+# NOTE: This will build for linux
+cross build --target x86_64-unknown-linux-gnu -r
+
+# NOTE: This will default to macos arm
+cross build -r

@@ -4,5 +4,6 @@
 mod tokenizer;
 
 fn main() {
-    println!("Hello, world!");
+    let a = "group(letter(upcase) | glob(rest=True) | whitespace) | number".to_string();
+    println!("{:?}", tokenizer::tokens::parse(a));
 }

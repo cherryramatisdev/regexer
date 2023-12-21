@@ -1,7 +1,7 @@
 // TODO: Remove this shit
 #![allow(dead_code)]
 
-mod tokenizer;
+mod lexer;
 
 fn main() {
     println!("Hello World");

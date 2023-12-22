@@ -20,6 +20,7 @@ pub enum Functions {
 #[derive(Debug, PartialEq, Eq)]
 pub enum Token {
     Identifier(String),
+    Parameter(String),
     LeftParen,
     RightParen,
     Whitespace,
@@ -40,7 +41,13 @@ pub fn tokenize(line: String) -> Vec<Token> {
                 tokens.push(match read_string(&mut peeks).as_str() {
                     "True" => Token::True,
                     "False" => Token::False,
-                    s => Token::Identifier(s.to_string()),
+                    s => {
+                        if let Some('=') = &peeks.peek() {
+                            Token::Parameter(s.to_string())
+                        } else {
+                            Token::Identifier(s.to_string())
+                        }
+                    }
                 });
             }
             '(' => {
@@ -94,13 +101,12 @@ mod tests {
 
     #[test]
     fn test_tokenize() {
-        let sut =
-            String::from("letter(upcase=True) | glob(rest=True) | whitespace | number");
+        let sut = String::from("letter(upcase=True) | glob(rest=True) | whitespace | number");
 
         let expected = vec![
             Token::Identifier("letter".to_string()),
             Token::LeftParen,
-            Token::Identifier("upcase".to_string()),
+            Token::Parameter("upcase".to_string()),
             Token::Equal,
             Token::True,
             Token::RightParen,
@@ -109,7 +115,7 @@ mod tests {
             Token::Whitespace,
             Token::Identifier("glob".to_string()),
             Token::LeftParen,
-            Token::Identifier("rest".to_string()),
+            Token::Parameter("rest".to_string()),
             Token::Equal,
             Token::True,
             Token::RightParen,
@@ -125,13 +131,12 @@ mod tests {
 
         assert_eq!(tokenize(sut), expected);
 
-        let sut =
-            String::from("letters(upcase=True) | glob(rest=True) | whitespace | numbers");
+        let sut = String::from("letters(upcase=True) | glob(rest=True) | whitespace | numbers");
 
         let expected = vec![
             Token::Identifier("letters".to_string()),
             Token::LeftParen,
-            Token::Identifier("upcase".to_string()),
+            Token::Parameter("upcase".to_string()),
             Token::Equal,
             Token::True,
             Token::RightParen,
@@ -140,7 +145,7 @@ mod tests {
             Token::Whitespace,
             Token::Identifier("glob".to_string()),
             Token::LeftParen,
-            Token::Identifier("rest".to_string()),
+            Token::Parameter("rest".to_string()),
             Token::Equal,
             Token::True,
             Token::RightParen,
@@ -164,7 +169,7 @@ mod tests {
             Token::LeftParen,
             Token::Identifier("letter".to_string()),
             Token::LeftParen,
-            Token::Identifier("upcase".to_string()),
+            Token::Parameter("upcase".to_string()),
             Token::Equal,
             Token::True,
             Token::RightParen,
@@ -173,7 +178,7 @@ mod tests {
             Token::Whitespace,
             Token::Identifier("glob".to_string()),
             Token::LeftParen,
-            Token::Identifier("rest".to_string()),
+            Token::Parameter("rest".to_string()),
             Token::Equal,
             Token::True,
             Token::RightParen,
@@ -190,15 +195,16 @@ mod tests {
 
         assert_eq!(tokenize(sut), expected);
 
-        let sut =
-            String::from("group(letters(upcase=True) | glob(rest=True)) | whitespace | group(numbers)");
+        let sut = String::from(
+            "group(letters(upcase=True) | glob(rest=True)) | whitespace | group(numbers)",
+        );
 
         let expected = vec![
             Token::Identifier("group".to_string()),
             Token::LeftParen,
             Token::Identifier("letters".to_string()),
             Token::LeftParen,
-            Token::Identifier("upcase".to_string()),
+            Token::Parameter("upcase".to_string()),
             Token::Equal,
             Token::True,
             Token::RightParen,
@@ -207,7 +213,7 @@ mod tests {
             Token::Whitespace,
             Token::Identifier("glob".to_string()),
             Token::LeftParen,
-            Token::Identifier("rest".to_string()),
+            Token::Parameter("rest".to_string()),
             Token::Equal,
             Token::True,
             Token::RightParen,

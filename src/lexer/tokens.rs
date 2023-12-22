@@ -1,22 +1,5 @@
 use std::{iter::Peekable, str::Chars};
 
-#[derive(Debug, Eq, PartialEq)]
-pub enum Casing {
-    Upcase,
-    Downcase,
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum Functions {
-    Letter { casing: Casing },
-    Letters { casing: Casing },
-    Glob { rest: bool },
-    Whitespace,
-    Number,
-    Numbers,
-    Group(Box<Vec<Functions>>),
-}
-
 #[derive(Debug, PartialEq, Eq)]
 pub enum Token {
     Identifier(String),

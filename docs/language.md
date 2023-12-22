@@ -41,3 +41,17 @@ letter(upcase=True) | glob(rest=True) | whitespace | number => [A-Z].*\s[0-9]
 letters(upcase=True) | glob(rest=True) | whitespace | numbers => [A-Z]+.*\s[0-9]+ 
 group(letters(upcase=True) | glob(rest=True)) | whitespace | group(numbers) => ([A-Z]+.*)\s([0-9]+) 
 ```
+
+**Possibilities for a group**:
+
+```
+group(letters(upcase=True))
+```
+
+```
+group(letter | whitespace)
+```
+
+```
+group(letter | glob(rest=True))
+```

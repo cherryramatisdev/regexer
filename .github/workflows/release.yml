@@ -51,12 +51,8 @@ jobs:
         with:
           name: artifact-${{matrix.platform.os}}
           path: target/**/release/rq
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: ./binaries
       - name: stuff
-        run: ls -la target/**
+        run: ls -la
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:

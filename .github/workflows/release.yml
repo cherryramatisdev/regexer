@@ -46,10 +46,10 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: artifact-${{matrix.os}}
+          name: artifact-${{matrix.platform.os}}
           path: target/**/release/rq
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: Release - ${{ github.run_number }}
-          files: "target/**/release/rq"
+          files: "**/release/rq"

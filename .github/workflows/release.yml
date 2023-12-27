@@ -56,7 +56,7 @@ jobs:
         with:
           path: ./binaries
       - name: stuff
-        run: ls
+        run: ls -la target/
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:

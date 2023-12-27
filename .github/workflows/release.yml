@@ -51,9 +51,12 @@ jobs:
         with:
           name: artifact-${{matrix.platform.os}}
           path: target/**/release/rq
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: ./binaries
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: release_${{ github.run_number }}
-          files: "target/**/release/rq"
-          name: "rq-${{matrix.platform.os}}"
+          files: "./binaries/*"

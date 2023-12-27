@@ -14,22 +14,22 @@ jobs:
           - release_for: FreeBSD-x86_64
             os: ubuntu-20.04
             target: x86_64-unknown-freebsd
-            bin: precious
-            name: precious-FreeBSD-x86_64.tar.gz
+            bin: rq
+            name: rq-FreeBSD-x86_64.tar.gz
             command: build
 
           - release_for: Windows-x86_64
             os: windows-latest
             target: x86_64-pc-windows-msvc
-            bin: precious.exe
-            name: precious-Windows-x86_64.zip
+            bin: rq.exe
+            name: rq-Windows-x86_64.zip
             command: both
 
           - release_for: macOS-x86_64
             os: macOS-latest
             target: x86_64-apple-darwin
-            bin: precious
-            name: precious-Darwin-x86_64.tar.gz
+            bin: rq
+            name: rq-Darwin-x86_64.tar.gz
             command: both
 
     runs-on: ${{ matrix.platform.os }}
@@ -47,9 +47,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: artifact-${{matrix.os}}
-          path: bin/${{matrix.os}}
+          path: rq*
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: Release - ${{ github.run_number }}
-          files: "bin/*"
+          files: "rq*"

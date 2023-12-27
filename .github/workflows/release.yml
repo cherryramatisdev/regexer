@@ -55,11 +55,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: ./binaries
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r ${{matrix.platform.os}}.zip binaries
       - name: stuff
-        run: ls -la binaries
+        run: ls
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: release_${{ github.run_number }}
           files: |
-            binaries/artifact-${{matrix.platform.os}}
+            ./${{matrix.platform.os}}.zip

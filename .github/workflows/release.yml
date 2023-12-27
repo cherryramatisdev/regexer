@@ -53,11 +53,11 @@ jobs:
           path: target/**/release/rq
       - name: stuff
         run: |
-          mkdir ${{matrix.platform.os}}
-          mv target/**/release/rq ${{matrix.platform.os}}
+          mv target/**/release/rq rq-${{matrix.platform.os}}
+          ls -la
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: release_${{ github.run_number }}
           files: |
-            ./${{matrix.platform.os}}
+            ./rq-${{matrix.platform.os}}

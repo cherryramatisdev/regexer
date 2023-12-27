@@ -52,10 +52,12 @@ jobs:
           name: artifact-${{matrix.platform.os}}
           path: target/**/release/rq
       - name: stuff
-        run: ls -la target/**/release
+        run: |
+          mkdir ${{matrix.platform.os}}
+          mv target/**/release/rq ${{matrix.platform.os}}
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: release_${{ github.run_number }}
           files: |
-            ./target/**/release/rq
+            ./${{matrix.platform.os}}

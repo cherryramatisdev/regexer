@@ -65,4 +65,4 @@ jobs:
         with:
           tag_name: release_${{ github.run_number }}
           files: |
-            ./${{matrix.platform.os}}.zip
+            ./binaries/artifact-${{matrix.platform.os}}

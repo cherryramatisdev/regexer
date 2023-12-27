@@ -4,5 +4,11 @@
 mod lexer;
 
 fn main() {
-    println!("Hello World");
+    let input =
+        String::from("group(letters(upcase=True) | glob(rest=True)) | whitespace | group(numbers)");
+
+    println!(
+        "MAIN -> {:?}",
+        lexer::ast::parse(lexer::tokens::tokenize(input))
+    );
 }

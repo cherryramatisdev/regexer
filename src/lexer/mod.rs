@@ -1,2 +1,2 @@
-pub mod functions;
+pub mod ast;
 pub mod tokens;

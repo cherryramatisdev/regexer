@@ -49,7 +49,7 @@ pub fn tokenize(line: String) -> Vec<Token> {
                 tokens.push(consume(Token::Equal, &mut peeks));
             }
             _ => {
-                panic!("Invalid token ->[{}]", symbol);
+                panic!("Invalid token -> [{symbol}]");
             }
         }
     }

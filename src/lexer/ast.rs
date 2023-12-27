@@ -7,14 +7,14 @@ pub enum Casing {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum Functions {
+pub enum Function {
     Letter { casing: Casing },
     Letters { casing: Casing },
     Glob { rest: bool },
     Whitespace,
     Number,
     Numbers,
-    Group(Box<Vec<Functions>>),
+    Group(Box<Vec<Function>>),
 }
 
 fn slice_until_end_func<'a>(
@@ -52,9 +52,9 @@ fn slice_until_end_group<'a>(
 }
 
 // TODO: define a `consume` function to not keep repeating the peeks_tokens.next() all the time
-pub fn tokenize(tokens: Vec<tokens::Token>) -> Vec<Functions> {
+pub fn parse(tokens: Vec<tokens::Token>) -> Vec<Function> {
     let mut peeks_tokens = tokens.clone().into_iter().enumerate().peekable();
-    let mut functions: Vec<Functions> = vec![];
+    let mut functions: Vec<Function> = vec![];
 
     while let Some((index, token)) = peeks_tokens.peek() {
         if let tokens::Token::Identifier(identifier) = token {
@@ -70,7 +70,7 @@ pub fn tokenize(tokens: Vec<tokens::Token>) -> Vec<Functions> {
                             tokens::Token::RightParen,
                         ]
                     {
-                        functions.push(Functions::Letter {
+                        functions.push(Function::Letter {
                             casing: Casing::Upcase,
                         });
                     }
@@ -84,7 +84,7 @@ pub fn tokenize(tokens: Vec<tokens::Token>) -> Vec<Functions> {
                             tokens::Token::RightParen,
                         ]
                     {
-                        functions.push(Functions::Letter {
+                        functions.push(Function::Letter {
                             casing: Casing::Downcase,
                         });
                     }
@@ -102,7 +102,7 @@ pub fn tokenize(tokens: Vec<tokens::Token>) -> Vec<Functions> {
                             tokens::Token::RightParen,
                         ]
                     {
-                        functions.push(Functions::Letters {
+                        functions.push(Function::Letters {
                             casing: Casing::Upcase,
                         });
                     }
@@ -116,7 +116,7 @@ pub fn tokenize(tokens: Vec<tokens::Token>) -> Vec<Functions> {
                             tokens::Token::RightParen,
                         ]
                     {
-                        functions.push(Functions::Letters {
+                        functions.push(Function::Letters {
                             casing: Casing::Downcase,
                         });
                     }
@@ -134,7 +134,7 @@ pub fn tokenize(tokens: Vec<tokens::Token>) -> Vec<Functions> {
                             tokens::Token::RightParen,
                         ]
                     {
-                        functions.push(Functions::Glob { rest: true });
+                        functions.push(Function::Glob { rest: true });
                     }
 
                     if func_tokens
@@ -146,34 +146,34 @@ pub fn tokenize(tokens: Vec<tokens::Token>) -> Vec<Functions> {
                             tokens::Token::RightParen,
                         ]
                     {
-                        functions.push(Functions::Glob { rest: false });
+                        functions.push(Function::Glob { rest: false });
                     }
 
                     peeks_tokens.nth(right_pos_idx);
                 }
                 "whitespace" => {
                     peeks_tokens.next();
-                    functions.push(Functions::Whitespace)
+                    functions.push(Function::Whitespace)
                 }
                 "number" => {
                     peeks_tokens.next();
-                    functions.push(Functions::Number)
+                    functions.push(Function::Number)
                 }
                 "numbers" => {
                     peeks_tokens.next();
-                    functions.push(Functions::Numbers)
+                    functions.push(Function::Numbers)
                 }
                 "group" => {
                     let (group_tokens, right_pos_idx) = slice_until_end_group(&tokens, &index);
 
-                    let tokens = tokenize(group_tokens.to_vec());
+                    let tokens = parse(group_tokens.to_vec());
 
-                    functions.push(Functions::Group(Box::new(tokens)));
+                    functions.push(Function::Group(Box::new(tokens)));
 
                     peeks_tokens.nth(right_pos_idx);
                 }
                 _ => {
-                    println!("faltou quem {identifier}");
+                    panic!("Invalid identifier -> [{identifier}]");
                 }
             }
         } else {
@@ -196,17 +196,17 @@ mod tests {
         );
 
         assert_eq!(
-            tokenize(tokens::tokenize(input)),
+            parse(tokens::tokenize(input)),
             vec![
-                Functions::Group(Box::new(vec![
-                    Functions::Letters {
+                Function::Group(Box::new(vec![
+                    Function::Letters {
                         casing: Casing::Upcase
                     },
-                    Functions::Glob { rest: true }
+                    Function::Glob { rest: true }
                 ])),
-                Functions::Whitespace,
-                Functions::Group(Box::new(vec![Functions::Numbers])),
-                Functions::Numbers
+                Function::Whitespace,
+                Function::Group(Box::new(vec![Function::Numbers])),
+                Function::Numbers
             ]
         );
     }
@@ -218,28 +218,32 @@ mod tests {
         );
 
         assert_eq!(
-            tokenize(tokens::tokenize(input)),
+            parse(tokens::tokenize(input)),
             vec![
-                Functions::Letter { casing: Casing::Upcase },
-                Functions::Letter { casing: Casing::Downcase },
-                Functions::Glob { rest: true },
-                Functions::Glob { rest: false },
-                Functions::Whitespace,
-                Functions::Number,
+                Function::Letter {
+                    casing: Casing::Upcase
+                },
+                Function::Letter {
+                    casing: Casing::Downcase
+                },
+                Function::Glob { rest: true },
+                Function::Glob { rest: false },
+                Function::Whitespace,
+                Function::Number,
             ]
         );
 
-        let input = String::from(
-            "letters(upcase=True) | glob(rest=True) | whitespace | numbers",
-        );
+        let input = String::from("letters(upcase=True) | glob(rest=True) | whitespace | numbers");
 
         assert_eq!(
-            tokenize(tokens::tokenize(input)),
+            parse(tokens::tokenize(input)),
             vec![
-                Functions::Letters { casing: Casing::Upcase },
-                Functions::Glob { rest: true },
-                Functions::Whitespace,
-                Functions::Numbers,
+                Function::Letters {
+                    casing: Casing::Upcase
+                },
+                Function::Glob { rest: true },
+                Function::Whitespace,
+                Function::Numbers,
             ]
         );
     }

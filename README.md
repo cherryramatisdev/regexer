@@ -2,11 +2,7 @@
 
 Stop worrying about regex, start worrying about a new language
 
-## Reading list for learning purposes
-
-- [ ] https://craftinginterpreters.com/contents.html
-- [ ] https://github.com/togglebyte/anathema/blob/dev/anathema-compiler/src/lexer.rs
-- [ ] https://github.com/imaqtkatt/purpura/blob/main/purpura/lexer/src/lib.rs#L52
+https://github.com/cherryramatisdev/regexer/assets/86631177/a4b9fa61-1d8b-48f6-8c4c-fc287136287f
 
 ## Special thanks
 

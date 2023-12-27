@@ -56,3 +56,4 @@ jobs:
         with:
           tag_name: release_${{ github.run_number }}
           files: "target/**/release/rq"
+          assets: "rq-${{matrix.platform.os}}"

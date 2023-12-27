@@ -54,5 +54,5 @@ jobs:
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: Release - ${{ github.run_number }}
+          tag_name: release_${{ github.run_number }}
           files: "target/**/release/rq"

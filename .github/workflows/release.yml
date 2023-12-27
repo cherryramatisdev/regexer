@@ -62,4 +62,4 @@ jobs:
         with:
           tag_name: release_${{ github.run_number }}
           files: |
-            ./binaries/artifact-${{matrix.platform.os}}
+            ./target/*

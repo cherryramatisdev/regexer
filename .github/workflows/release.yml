@@ -51,10 +51,9 @@ jobs:
         with:
           name: artifact-${{matrix.platform.os}}
           path: target/**/release/rq
-      - name: stuff
+      - name: Rename binaries
         run: |
           mv target/**/release/rq rq-${{matrix.platform.os}}
-          ls -la
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:

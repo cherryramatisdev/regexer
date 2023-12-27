@@ -55,6 +55,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: ./binaries
+      - name: stuff
+        run: ls -la
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:

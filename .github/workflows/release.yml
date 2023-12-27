@@ -52,7 +52,7 @@ jobs:
           name: artifact-${{matrix.platform.os}}
           path: target/**/release/rq
       - name: stuff
-        run: ls -la
+        run: ls -la target/**/release
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:

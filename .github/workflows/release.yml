@@ -56,10 +56,10 @@ jobs:
         with:
           path: ./binaries
       - name: stuff
-        run: ls -la target/
+        run: ls -la target/**
       - name: Generate release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: release_${{ github.run_number }}
           files: |
-            ./target/*
+            ./target/**

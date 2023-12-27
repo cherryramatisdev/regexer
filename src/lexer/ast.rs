@@ -1,12 +1,12 @@
 use crate::lexer::tokens;
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub enum Casing {
     Upcase,
     Downcase,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Function {
     Letter { casing: Casing },
     Letters { casing: Casing },
@@ -89,7 +89,7 @@ pub fn parse(tokens: Vec<tokens::Token>) -> Vec<Function> {
                         });
                     }
 
-                    peeks_tokens.nth(right_pos_idx);
+                    peeks_tokens.nth(right_pos_idx + 1);
                 }
                 "letters" => {
                     let (func_tokens, right_pos_idx) = slice_until_end_func(&tokens, &index);
@@ -121,7 +121,7 @@ pub fn parse(tokens: Vec<tokens::Token>) -> Vec<Function> {
                         });
                     }
 
-                    peeks_tokens.nth(right_pos_idx);
+                    peeks_tokens.nth(right_pos_idx + 1);
                 }
                 "glob" => {
                     let (func_tokens, right_pos_idx) = slice_until_end_func(&tokens, &index);
@@ -149,7 +149,7 @@ pub fn parse(tokens: Vec<tokens::Token>) -> Vec<Function> {
                         functions.push(Function::Glob { rest: false });
                     }
 
-                    peeks_tokens.nth(right_pos_idx);
+                    peeks_tokens.nth(right_pos_idx + 1);
                 }
                 "whitespace" => {
                     peeks_tokens.next();
@@ -170,7 +170,7 @@ pub fn parse(tokens: Vec<tokens::Token>) -> Vec<Function> {
 
                     functions.push(Function::Group(Box::new(tokens)));
 
-                    peeks_tokens.nth(right_pos_idx);
+                    peeks_tokens.nth(right_pos_idx + 1);
                 }
                 _ => {
                     panic!("Invalid identifier -> [{identifier}]");
@@ -205,8 +205,7 @@ mod tests {
                     Function::Glob { rest: true }
                 ])),
                 Function::Whitespace,
-                Function::Group(Box::new(vec![Function::Numbers])),
-                Function::Numbers
+                Function::Group(Box::new(vec![Function::Numbers]))
             ]
         );
     }

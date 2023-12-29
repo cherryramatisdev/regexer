@@ -6,6 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anathema = { git = "https://github.com/togglebyte/anathema.git", branch = "dev" }
+anyhow = "1.0.77"
 regexer = { path = "../regexer" }
 
 [[bin]]

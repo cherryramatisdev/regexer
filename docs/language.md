@@ -18,12 +18,14 @@
 
 ### 08/12/2023
 
-The initial idea here is to make the first "language" that comes to my mind in a javascripty way
+The initial idea here is to make the first "language" that comes to my mind in a
+javascripty way
 
 ```
 .letter(upcase).glob(rest=True).whitespace().number() => [A-Z].*\s[0-9]
 .letters(upcase).glob(rest=True).whitespace().numbers() => [A-Z]+.*\s[0-9]+
-.group(letters(upcase).glob(rest=True)).whitespace().group(numbers()) => ([A-Z]+.*)\s([0-9]+)
+.group(letters(upcase).glob(rest=True)).whitespace().group(numbers()) =>
+([A-Z]+.*)\s([0-9]+)
 ```
 
 ### 09/12/2023
@@ -38,8 +40,10 @@ because we can in the future support more data types, not only booleans.
 
 ```
 letter(upcase=True) | glob(rest=True) | whitespace | number => [A-Z].*\s[0-9]
-letters(upcase=True) | glob(rest=True) | whitespace | numbers => [A-Z]+.*\s[0-9]+ 
-group(letters(upcase=True) | glob(rest=True)) | whitespace | group(numbers) => ([A-Z]+.*)\s([0-9]+) 
+letters(upcase=True) | glob(rest=True) | whitespace | numbers =>
+[A-Z]+.*\s[0-9]+ 
+group(letters(upcase=True) | glob(rest=True)) | whitespace | group(numbers) =>
+([A-Z]+.*)\s([0-9]+) 
 ```
 
 **Possibilities for a group**:
@@ -55,3 +59,4 @@ group(letter | whitespace)
 ```
 group(letter | glob(rest=True))
 ```
+

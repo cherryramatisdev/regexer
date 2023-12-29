@@ -60,3 +60,15 @@ group(letter | whitespace)
 group(letter | glob(rest=True))
 ```
 
+### 29/12/2023
+
+For every identifier like `numbers`, `letters, `letter`, `number`, we should be
+able to define a selector that forces the query to match **exactly** the number
+of chars informed. This can be achieved by using the `{3}` constraint from
+regex.
+
+```
+letters(upcase=True, select=3) => [A-Z]{3}
+letters(upcase=True, select=3) | numbers(select=4) => [A-Z]{3}[0-9]{4}
+group(letters(upcase=True, select=3)) | numbers(select=4) => ([A-Z]{3})[0-9]{4}
+```

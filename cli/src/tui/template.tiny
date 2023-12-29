@@ -1,0 +1,11 @@
+vstack
+    expand
+        border
+            expand
+                text output
+    border
+        expand [axis: "horz"]
+            zstack
+                text input
+                position [left: cursor_pos]
+                    text [foreground: "white", background: "black"] "█"

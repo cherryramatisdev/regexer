@@ -4,6 +4,7 @@ use std::{iter::Peekable, str::Chars};
 pub enum Token {
     Identifier(String),
     Parameter(String),
+    Int(u32),
     LeftParen,
     RightParen,
     Whitespace,
@@ -11,6 +12,7 @@ pub enum Token {
     False,
     True,
     Pipe,
+    Comma,
 }
 
 pub fn tokenize(line: String) -> Vec<Token> {
@@ -33,6 +35,11 @@ pub fn tokenize(line: String) -> Vec<Token> {
                     }
                 });
             }
+            symbol if symbol.is_alphanumeric() => {
+                if let Ok(num) = read_number(&mut peeks).as_str().parse::<u32>() {
+                    tokens.push(Token::Int(num));
+                }
+            }
             '(' => {
                 tokens.push(consume(Token::LeftParen, &mut peeks));
             }
@@ -47,6 +54,9 @@ pub fn tokenize(line: String) -> Vec<Token> {
             }
             '=' => {
                 tokens.push(consume(Token::Equal, &mut peeks));
+            }
+            ',' => {
+                tokens.push(consume(Token::Comma, &mut peeks));
             }
             _ => {
                 panic!("Invalid token -> [{symbol}]");
@@ -68,6 +78,21 @@ fn read_string(peeks: &mut Peekable<Chars<'_>>) -> String {
 
     while let Some(&ch) = peeks.peek() {
         if ch.is_alphabetic() {
+            string.push(ch);
+            peeks.next();
+        } else {
+            break;
+        }
+    }
+
+    return string;
+}
+
+fn read_number(peeks: &mut Peekable<Chars<'_>>) -> String {
+    let mut string = String::new();
+
+    while let Some(&ch) = peeks.peek() {
+        if ch.is_alphanumeric() {
             string.push(ch);
             peeks.next();
         } else {
@@ -211,6 +236,62 @@ mod tests {
             Token::Identifier("group".to_string()),
             Token::LeftParen,
             Token::Identifier("numbers".to_string()),
+            Token::RightParen,
+        ];
+
+        assert_eq!(tokenize(sut), expected);
+    }
+
+    #[test]
+    fn test_multiple_parameters() {
+        let sut = String::from("letters(upcase=True, select=3)");
+
+        let expected = vec![
+            Token::Identifier("letters".to_string()),
+            Token::LeftParen,
+            Token::Parameter("upcase".to_string()),
+            Token::Equal,
+            Token::True,
+            Token::Comma,
+            Token::Whitespace,
+            Token::Parameter("select".to_string()),
+            Token::Equal,
+            Token::Int(3),
+            Token::RightParen,
+        ];
+
+        assert_eq!(tokenize(sut), expected);
+
+        let sut = String::from("letters(upcase=True, select=33)");
+
+        let expected = vec![
+            Token::Identifier("letters".to_string()),
+            Token::LeftParen,
+            Token::Parameter("upcase".to_string()),
+            Token::Equal,
+            Token::True,
+            Token::Comma,
+            Token::Whitespace,
+            Token::Parameter("select".to_string()),
+            Token::Equal,
+            Token::Int(33),
+            Token::RightParen,
+        ];
+
+        assert_eq!(tokenize(sut), expected);
+
+        let sut = String::from("letters(upcase=True,select=33)");
+
+        let expected = vec![
+            Token::Identifier("letters".to_string()),
+            Token::LeftParen,
+            Token::Parameter("upcase".to_string()),
+            Token::Equal,
+            Token::True,
+            Token::Comma,
+            Token::Parameter("select".to_string()),
+            Token::Equal,
+            Token::Int(33),
             Token::RightParen,
         ];
 

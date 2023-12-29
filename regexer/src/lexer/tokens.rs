@@ -4,6 +4,7 @@ use std::{iter::Peekable, str::Chars};
 pub enum Token {
     Identifier(String),
     Parameter(String),
+    Int(u32),
     LeftParen,
     RightParen,
     Whitespace,
@@ -32,6 +33,11 @@ pub fn tokenize(line: String) -> Vec<Token> {
                         }
                     }
                 });
+            }
+            symbol if symbol.is_alphanumeric() => {
+                if let Ok(num) = read_number(&mut peeks).as_str().parse::<u32>() {
+                    tokens.push(Token::Int(num));
+                }
             }
             '(' => {
                 tokens.push(consume(Token::LeftParen, &mut peeks));
@@ -68,6 +74,21 @@ fn read_string(peeks: &mut Peekable<Chars<'_>>) -> String {
 
     while let Some(&ch) = peeks.peek() {
         if ch.is_alphabetic() {
+            string.push(ch);
+            peeks.next();
+        } else {
+            break;
+        }
+    }
+
+    return string;
+}
+
+fn read_number(peeks: &mut Peekable<Chars<'_>>) -> String {
+    let mut string = String::new();
+
+    while let Some(&ch) = peeks.peek() {
+        if ch.is_alphanumeric() {
             string.push(ch);
             peeks.next();
         } else {

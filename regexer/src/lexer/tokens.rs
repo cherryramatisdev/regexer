@@ -12,6 +12,7 @@ pub enum Token {
     False,
     True,
     Pipe,
+    Comma,
 }
 
 pub fn tokenize(line: String) -> Vec<Token> {
@@ -53,6 +54,9 @@ pub fn tokenize(line: String) -> Vec<Token> {
             }
             '=' => {
                 tokens.push(consume(Token::Equal, &mut peeks));
+            }
+            ',' => {
+                tokens.push(consume(Token::Comma, &mut peeks));
             }
             _ => {
                 panic!("Invalid token -> [{symbol}]");
@@ -232,6 +236,62 @@ mod tests {
             Token::Identifier("group".to_string()),
             Token::LeftParen,
             Token::Identifier("numbers".to_string()),
+            Token::RightParen,
+        ];
+
+        assert_eq!(tokenize(sut), expected);
+    }
+
+    #[test]
+    fn test_multiple_parameters() {
+        let sut = String::from("letters(upcase=True, select=3)");
+
+        let expected = vec![
+            Token::Identifier("letters".to_string()),
+            Token::LeftParen,
+            Token::Parameter("upcase".to_string()),
+            Token::Equal,
+            Token::True,
+            Token::Comma,
+            Token::Whitespace,
+            Token::Parameter("select".to_string()),
+            Token::Equal,
+            Token::Int(3),
+            Token::RightParen,
+        ];
+
+        assert_eq!(tokenize(sut), expected);
+
+        let sut = String::from("letters(upcase=True, select=33)");
+
+        let expected = vec![
+            Token::Identifier("letters".to_string()),
+            Token::LeftParen,
+            Token::Parameter("upcase".to_string()),
+            Token::Equal,
+            Token::True,
+            Token::Comma,
+            Token::Whitespace,
+            Token::Parameter("select".to_string()),
+            Token::Equal,
+            Token::Int(33),
+            Token::RightParen,
+        ];
+
+        assert_eq!(tokenize(sut), expected);
+
+        let sut = String::from("letters(upcase=True,select=33)");
+
+        let expected = vec![
+            Token::Identifier("letters".to_string()),
+            Token::LeftParen,
+            Token::Parameter("upcase".to_string()),
+            Token::Equal,
+            Token::True,
+            Token::Comma,
+            Token::Parameter("select".to_string()),
+            Token::Equal,
+            Token::Int(33),
             Token::RightParen,
         ];
 

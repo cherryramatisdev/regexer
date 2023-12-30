@@ -77,10 +77,7 @@ pub fn call() -> anyhow::Result<()> {
         },
     };
 
-    let template = std::fs::read_to_string(format!(
-        "{}/cli/src/tui/template.tiny",
-        std::env::current_dir().unwrap().display(),
-    ))?;
+    let template = include_str!("template.tiny").to_string();
 
     let mut templates = Templates::new(template, root_view);
 
@@ -98,6 +95,3 @@ pub fn call() -> anyhow::Result<()> {
 
     Ok(())
 }
-
-// https://p.modprog.de/pp3R.rs
-// https://p.modprog.de/EMam
